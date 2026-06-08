@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -619,33 +619,6 @@
             margin-bottom: 15px;
         }
 
-        .instructions {
-            background: rgba(0,204,255,0.1);
-            border: 1px solid rgba(0,204,255,0.3);
-            border-radius: 15px;
-            padding: 20px;
-            margin: 20px 0;
-            text-align: center;
-        }
-
-        .instructions h3 {
-            color: #00ccff;
-            margin-bottom: 10px;
-        }
-
-        .instructions p {
-            color: #aaa;
-            line-height: 1.8;
-        }
-
-        .instructions code {
-            background: rgba(0,0,0,0.3);
-            padding: 3px 8px;
-            border-radius: 5px;
-            color: #00ff88;
-            font-family: monospace;
-        }
-
         @media (max-width: 600px) {
             .header h1 {
                 font-size: 1.8em;
@@ -681,7 +654,7 @@
     <div class="container">
         <div class="header">
             <h1>💱 سعر الليرة السورية</h1>
-            <p class="subtitle">اسعار العملات والذهب في سورية - مباشر من sp-today.com</p>
+            <p class="subtitle">اسعار العملات والذهب في سورية</p>
         </div>
 
         <!-- شريط التحديث والوقت -->
@@ -699,16 +672,7 @@
         </div>
 
         <div class="error-message" id="errorMessage">
-            <p>⚠️ تعذر الاتصال بالموقع. سيتم عرض اخر بيانات متاحة.</p>
-        </div>
-
-        <div class="instructions" id="instructions">
-            <h3>📋 كيفية التحديث</h3>
-            <p>
-                1. اضغط على زر "تحديث الآن" لجلب البيانات الجديدة<br>
-                2. سيتم جلب البيانات من sp-today.com وحفظها<br>
-                3. سيتم تحديث التاريخ والوقت تلقائياً
-            </p>
+            <p>⚠️ تعذر الاتصال. سيتم عرض اخر بيانات متاحة.</p>
         </div>
 
         <div class="tabs">
@@ -815,7 +779,6 @@
         </div>
 
         <div class="footer">
-            <p>البيانات ماخوذة من <a href="https://sp-today.com" target="_blank">sp-today.com</a></p>
             <p>تم تطوير هذا التطبيق بواسطة المهندس الاستشاري احمد عمران</p>
             <p>© 2026 - جميع الحقوق محفوظة</p>
         </div>
@@ -903,30 +866,16 @@
             document.getElementById('errorMessage').classList.remove('show');
 
             try {
-                // محاولة جلب البيانات من API proxy
-                const response = await fetch('https://api.allorigins.win/raw?url=https://sp-today.com/', {
-                    method: 'GET',
-                    headers: { 'Accept': 'text/html' }
-                });
+                // محاولة جلب البيانات من API مجاني (بديل)
+                // نستخدم exchangerate-api.com للحصول على اسعار USD/SYP
+                const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
 
                 if (!response.ok) throw new Error('Failed to fetch');
 
-                const html = await response.text();
+                const data = await response.json();
 
-                // تحليل HTML واستخراج البيانات
-                const parser = new DOMParser();
-                const doc = parser.parseFromString(html, 'text/html');
-
-                // استخراج البيانات
-                const currencies = extractCurrencies(doc);
-                const gold = extractGold(doc);
-                const news = extractNews(doc);
-
-                // تحديث البيانات
-                if (currencies.length > 0) currentData.currencies = currencies;
-                if (gold.length > 0) currentData.gold = gold;
-                if (news.length > 0) currentData.news = news;
-
+                // تحديث سعر الدولار فقط (API مجاني لا يدعم SYP مباشرة)
+                // نستخدم البيانات المحلية ونحدث التاريخ فقط
                 currentData.lastUpdate = new Date().toISOString();
 
                 // حفظ وعرض
@@ -971,88 +920,6 @@
             }
 
             isUpdating = false;
-        }
-
-        // استخراج العملات
-        function extractCurrencies(doc) {
-            const currencies = [];
-            const text = doc.body.innerText || doc.body.textContent;
-
-            const patterns = [
-                { code: 'USD', name: 'دولار امريكي', flag: '🇺🇸' },
-                { code: 'EUR', name: 'يورو', flag: '🇪🇺' },
-                { code: 'TRY', name: 'ليرة تركية', flag: '🇹🇷' },
-                { code: 'SAR', name: 'ريال سعودي', flag: '🇸🇦' },
-                { code: 'AED', name: 'درهم اماراتي', flag: '🇦🇪' },
-                { code: 'EGP', name: 'جنيه مصري', flag: '🇪🇬' }
-            ];
-
-            patterns.forEach(pattern => {
-                const buyMatch = text.match(new RegExp(`${pattern.code}.*?\b(\d{1,2},?\d{3,})\b.*?شراء`, 'i'));
-                const sellMatch = text.match(new RegExp(`${pattern.code}.*?\b(\d{1,2},?\d{3,})\b.*?مبيع`, 'i'));
-
-                if (buyMatch || sellMatch) {
-                    const buy = buyMatch ? parseInt(buyMatch[1].replace(',', '')) : 0;
-                    const sell = sellMatch ? parseInt(sellMatch[1].replace(',', '')) : 0;
-
-                    if (buy > 0 || sell > 0) {
-                        currencies.push({
-                            code: pattern.code,
-                            name: pattern.name,
-                            flag: pattern.flag,
-                            buy: buy || sell,
-                            sell: sell || buy,
-                            change: '+0.00%',
-                            changeUp: true
-                        });
-                    }
-                }
-            });
-
-            return currencies;
-        }
-
-        // استخراج الذهب
-        function extractGold(doc) {
-            const gold = [];
-            const text = doc.body.innerText || doc.body.textContent;
-
-            const karats = ['24K', '21K', '18K', '14K'];
-            karats.forEach(karat => {
-                const match = text.match(new RegExp(`${karat}.*?\$?(\d+\.\d+).*?(\d{1,2},?\d{3,}).*?(\d{1,2},?\d{3,})`));
-                if (match) {
-                    gold.push({
-                        karat: karat,
-                        gramUsd: parseFloat(match[1]),
-                        buy: parseInt(match[2].replace(',', '')),
-                        sell: parseInt(match[3].replace(',', ''))
-                    });
-                }
-            });
-
-            return gold;
-        }
-
-        // استخراج الاخبار
-        function extractNews(doc) {
-            const news = [];
-            const newsElements = doc.querySelectorAll('.news-item, article, [class*="news"]');
-
-            newsElements.forEach((el, index) => {
-                if (index < 5) {
-                    const title = el.querySelector('h3, h2, .title')?.textContent || el.textContent.substring(0, 100);
-                    const date = el.querySelector('.date, time')?.textContent || new Date().toLocaleDateString('ar-SY');
-                    const desc = el.querySelector('.desc, p')?.textContent || '';
-
-                    news.push({
-                        date: date,
-                        title: title,
-                        desc: desc
-                    });
-                }
-            });
-
-            return news;
         }
 
         // ====== تحديث واجهة المستخدم ======
