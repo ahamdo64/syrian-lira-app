@@ -2,17 +2,17 @@ name: Update Currency Data
 
 on:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 */6 * * *'  # كل 6 ساعات
   workflow_dispatch:
 
 jobs:
   update-data:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # مهم للـ push
+      contents: write
     
     steps:
-      - uses: actions/checkout@v4  # أحدث إصدار
+      - uses: actions/checkout@v4
       
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -20,16 +20,14 @@ jobs:
           python-version: '3.11'
       
       - name: Install dependencies
-        run: |
-          pip install requests beautifulsoup4
+        run: pip install requests beautifulsoup4 lxml
       
       - name: Run update script
-        run: python update_sp_today.py
-        continue-on-error: true  # لا يفشل إذا فشل السكريبت
+        run: python main.py
       
-      - name: Commit and push if changed
+      - name: Commit and push
         run: |
-          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
           git add sp_today_data.json
-          git diff --quiet && git diff --staged --quiet || (git commit -m "🔄 تحديث الأسعار - $(date '+%Y-%m-%d %H:%M')" && git push)
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🔄 تحديث الأسعار" && git push)
