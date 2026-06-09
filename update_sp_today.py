@@ -17,8 +17,8 @@ def fetch_data():
     """جلب البيانات من الموقع"""
     url = 'https://sp-today.com/'
     headers = {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Language': 'ar,en;q=0.9',
     }
 
@@ -38,7 +38,7 @@ def fetch_data():
 
         # طباعة جزء من النص للتصحيح
         print("\n📄 عينة من النص المستخرج:")
-        print(text[:1000])
+        print(text[:1500])
         print("...")
 
         data = {
@@ -51,106 +51,109 @@ def fetch_data():
         # ===== استخراج العملات =====
         print("\n💰 جاري استخراج اسعار العملات...")
 
-        # البحث عن جدول العملات
-        currency_section = text.find('الأسعار الحالية')
-        if currency_section != -1:
-            currency_text = text[currency_section:currency_section + 3000]
+        # البحث عن جدول العملات - البحث في النص الكامل
+        # USD دولار امريكي 14,280 14,340 +0.92%
 
-            # أنماط البحث المحدثة
-            currency_patterns = [
-                {'code': 'USD', 'name': 'دولار امريكي', 'flag': '🇺🇸'},
-                {'code': 'EUR', 'name': 'يورو', 'flag': '🇪🇺'},
-                {'code': 'TRY', 'name': 'ليرة تركية', 'flag': '🇹🇷'},
-                {'code': 'SAR', 'name': 'ريال سعودي', 'flag': '🇸🇦'},
-                {'code': 'AED', 'name': 'درهم اماراتي', 'flag': '🇦🇪'},
-                {'code': 'EGP', 'name': 'جنيه مصري', 'flag': '🇪🇬'}
-            ]
+        currency_patterns = [
+            {'code': 'USD', 'name': 'دولار امريكي', 'flag': '🇺🇸'},
+            {'code': 'EUR', 'name': 'يورو', 'flag': '🇪🇺'},
+            {'code': 'TRY', 'name': 'ليرة تركية', 'flag': '🇹🇷'},
+            {'code': 'SAR', 'name': 'ريال سعودي', 'flag': '🇸🇦'},
+            {'code': 'AED', 'name': 'درهم اماراتي', 'flag': '🇦🇪'},
+            {'code': 'EGP', 'name': 'جنيه مصري', 'flag': '🇪🇬'}
+        ]
 
-            for pattern in currency_patterns:
-                code = pattern['code']
+        for pattern in currency_patterns:
+            code = pattern['code']
 
-                # البحث عن النمط: USD ... رقم ... رقم ... %
-                # مثال: USDدولار أمريكي14,28014,340+0.92%
-                pattern_regex = rf'{code}.*?([0-9,]{{3,}}).*?([0-9,]{{3,}}).*?([+-]?[0-9.]+)%'
-                match = re.search(pattern_regex, currency_text, re.DOTALL)
+            # البحث عن النمط: USD (اي نص) رقم (اي نص) رقم (اي نص) +رقم%
+            # مثال: USD دولار أمريكي 14,280 14,340 +0.92%
 
-                if match:
-                    buy_str = match.group(1).replace(',', '')
-                    sell_str = match.group(2).replace(',', '')
-                    change_str = match.group(3)
+            # نمط محسن للبحث
+            pattern_regex = code + r'[^0-9]{0,50}([0-9,]{3,})[^0-9]{0,50}([0-9,]{3,})[^0-9]{0,50}([+-]?[0-9.]+)%'
+            match = re.search(pattern_regex, text, re.DOTALL)
 
-                    try:
-                        buy = int(buy_str)
-                        sell = int(sell_str)
-                        change = f"{change_str}%"
-                        change_up = not change_str.startswith('-')
+            if match:
+                buy_str = match.group(1).replace(',', '')
+                sell_str = match.group(2).replace(',', '')
+                change_str = match.group(3)
 
-                        data['currencies'].append({
-                            'code': code,
-                            'name': pattern['name'],
-                            'flag': pattern['flag'],
-                            'buy': buy,
-                            'sell': sell,
-                            'change': change,
-                            'changeUp': change_up
-                        })
-                        print(f"  ✅ {code}: شراء {buy:,} - مبيع {sell:,} - {change}")
-                    except ValueError:
-                        print(f"  ⚠️ خطأ في تحويل ارقام {code}")
-                else:
-                    print(f"  ❌ لم يتم العثور على {code}")
+                try:
+                    buy = int(buy_str)
+                    sell = int(sell_str)
+                    change = f"{change_str}%"
+                    change_up = not change_str.startswith('-')
+
+                    data['currencies'].append({
+                        'code': code,
+                        'name': pattern['name'],
+                        'flag': pattern['flag'],
+                        'buy': buy,
+                        'sell': sell,
+                        'change': change,
+                        'changeUp': change_up
+                    })
+                    print(f"  ✅ {code}: شراء {buy:,} - مبيع {sell:,} - {change}")
+                except ValueError as e:
+                    print(f"  ⚠️ خطأ في تحويل ارقام {code}: {e}")
+            else:
+                print(f"  ❌ لم يتم العثور على {code}")
+                # محاولة ثانية بنمط مختلف
+                alt_pattern = code + r'.*?([0-9,]{3,}).*?([0-9,]{3,}).*?([+-]?[0-9.]+)%'
+                alt_match = re.search(alt_pattern, text, re.DOTALL)
+                if alt_match:
+                    print(f"  🔄 تم العثور بنمط بديل!")
 
         # ===== استخراج الذهب =====
         print("\n🥇 جاري استخراج اسعار الذهب...")
 
-        gold_section = text.find('أسعار الذهب')
-        if gold_section != -1:
-            gold_text = text[gold_section:gold_section + 2000]
+        karats = ['24K', '21K', '18K', '14K']
+        for karat in karats:
+            # البحث عن: 24K (اي نص) $رقم (اي نص) رقم (اي نص) رقم
+            pattern = karat + r'[^0-9]{0,50}\$?([0-9.]+)[^0-9]{0,50}([0-9,]{3,})[^0-9]{0,50}([0-9,]{3,})'
+            match = re.search(pattern, text, re.DOTALL)
 
-            karats = ['24K', '21K', '18K', '14K']
-            for karat in karats:
-                # البحث عن: 24K ... $رقم ... رقم ... رقم
-                pattern = rf'{karat}.*?\$?([0-9.]+).*?([0-9,]{{3,}}).*?([0-9,]{{3,}})'
-                match = re.search(pattern, gold_text, re.DOTALL)
+            if match:
+                try:
+                    gram_usd = float(match.group(1))
+                    buy = int(match.group(2).replace(',', ''))
+                    sell = int(match.group(3).replace(',', ''))
 
-                if match:
-                    try:
-                        gram_usd = float(match.group(1))
-                        buy = int(match.group(2).replace(',', ''))
-                        sell = int(match.group(3).replace(',', ''))
-
-                        data['gold'].append({
-                            'karat': karat,
-                            'gramUsd': gram_usd,
-                            'buy': buy,
-                            'sell': sell
-                        })
-                        print(f"  ✅ {karat}: ${gram_usd} - شراء {buy:,} - مبيع {sell:,}")
-                    except ValueError:
-                        print(f"  ⚠️ خطأ في تحويل ارقام {karat}")
-                else:
-                    print(f"  ❌ لم يتم العثور على {karat}")
+                    data['gold'].append({
+                        'karat': karat,
+                        'gramUsd': gram_usd,
+                        'buy': buy,
+                        'sell': sell
+                    })
+                    print(f"  ✅ {karat}: ${gram_usd} - شراء {buy:,} - مبيع {sell:,}")
+                except ValueError as e:
+                    print(f"  ⚠️ خطأ في تحويل ارقام {karat}: {e}")
+            else:
+                print(f"  ❌ لم يتم العثور على {karat}")
 
         # ===== استخراج الاخبار =====
         print("\n📰 جاري استخراج الاخبار...")
 
-        news_section = text.find('أخبار اقتصادية')
-        if news_section != -1:
-            news_text = text[news_section:news_section + 3000]
+        # البحث عن الاخبار بالنمط: التاريخ **العنوان** الوصف
+        news_pattern = r'(\d{2}/\d{2}/\d{4})\s+([^\n]+?)\s+([^\n]*?)(?=\d{2}/\d{2}/\d{4}|$)'
+        news_items = re.findall(news_pattern, text, re.DOTALL)
 
-            # تقسيم الاخبار
-            news_items = re.findall(r'(\d{2}‏/\d{2}‏/\d{4}[^
-]*?)\*\*([^
-]+?)\*\*([^
-]*?)(?=\d{2}‏/\d{2}‏/\d{4}|$)', news_text, re.DOTALL)
+        if not news_items:
+            # نمط بديل
+            news_pattern2 = r'(\d{2}‏/\d{2}‏/\d{4})\s*([^\n]+?)\s*([^\n]*?)(?=\d{2}‏/\d{2}‏/\d{4}|$)'
+            news_items = re.findall(news_pattern2, text, re.DOTALL)
 
-            for i, (date, title, desc) in enumerate(news_items[:5]):
-                data['news'].append({
-                    'date': date.strip().replace('‏', ''),
-                    'title': title.strip(),
-                    'desc': desc.strip()[:200]
-                })
-                print(f"  ✅ خبر {i+1}: {title.strip()[:50]}...")
+        for i, (date, title, desc) in enumerate(news_items[:5]):
+            clean_date = date.replace('‏', '').strip()
+            clean_title = title.strip().replace('**', '')
+            clean_desc = desc.strip().replace('**', '')[:200]
+
+            data['news'].append({
+                'date': clean_date,
+                'title': clean_title,
+                'desc': clean_desc
+            })
+            print(f"  ✅ خبر {i+1}: {clean_title[:50]}...")
 
         print(f"\n📊 النتائج:")
         print(f"  💰 العملات: {len(data['currencies'])}")
