@@ -3,6 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>سعر الليرة السورية - المهندس الاستشاري احمد عمران</title>
     <style>
         * {
@@ -121,6 +124,15 @@
 
         .update-btn.error {
             background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+        }
+
+        .clear-cache-btn {
+            background: linear-gradient(45deg, #ff6b6b, #ff8e8e);
+            color: white;
+        }
+
+        .clear-cache-btn:hover {
+            box-shadow: 0 6px 20px rgba(255,107,107,0.4);
         }
 
         .status-badge {
@@ -619,6 +631,16 @@
             margin-bottom: 15px;
         }
 
+        .data-source-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            background: rgba(0,204,255,0.2);
+            border-radius: 15px;
+            font-size: 0.85em;
+            color: #00ccff;
+            margin-top: 10px;
+        }
+
         @media (max-width: 600px) {
             .header h1 {
                 font-size: 1.8em;
@@ -668,6 +690,10 @@
             <button class="update-btn" id="updateBtn" onclick="fetchData()">
                 <span class="btn-icon" id="btnIcon">🔄</span>
                 <span id="btnText">تحديث الآن</span>
+            </button>
+            <button class="update-btn clear-cache-btn" onclick="clearCache()">
+                <span class="btn-icon">🗑️</span>
+                <span>مسح البيانات</span>
             </button>
         </div>
 
@@ -754,7 +780,7 @@
         <!-- الملف الشخصي -->
         <div id="profile" class="tab-content">
             <div class="profile-card">
-                <div class="profile-avatar">👨‍💼</div>
+                <div class="profile-avatar">👨‍</div>
                 <h2 class="profile-name">المهندس الاستشاري احمد عمران</h2>
                 <p class="profile-title">مهندس استشاري - خبير في مجال التقنية والتطوير</p>
                 <div class="profile-info">
@@ -790,19 +816,19 @@
             currencies: [
                 { code: 'USD', name: 'دولار أمريكي', flag: '🇺🇸', buy: 14270, sell: 14330, change: '+0.85%', changeUp: true },
                 { code: 'EUR', name: 'يورو', flag: '🇪🇺', buy: 16380, sell: 16580, change: '+1.11%', changeUp: true },
-                { code: 'TRY', name: 'ليرة تركية', flag: '🇹🇷', buy: 307, sell: 311, change: '+0.66%', changeUp: true },
+                { code: 'TRY', name: 'ليرة تركية', flag: '🇹', buy: 307, sell: 311, change: '+0.66%', changeUp: true },
                 { code: 'SAR', name: 'ريال سعودي', flag: '🇸🇦', buy: 3763, sell: 3817, change: '+0.83%', changeUp: true },
                 { code: 'AED', name: 'درهم إماراتي', flag: '🇦🇪', buy: 3847, sell: 3902, change: '+0.87%', changeUp: true },
                 { code: 'EGP', name: 'جنيه مصري', flag: '🇪🇬', buy: 273, sell: 277, change: '+1.49%', changeUp: true },
                 { code: 'LYD', name: 'دينار ليبي', flag: '🇱🇾', buy: 2221, sell: 2253, change: '+0.73%', changeUp: true },
                 { code: 'JOD', name: 'دينار أردني', flag: '🇯🇴', buy: 19926, sell: 20212, change: '+0.85%', changeUp: true },
                 { code: 'KWD', name: 'دينار كويتي', flag: '🇰🇼', buy: 45711, sell: 46366, change: '+0.94%', changeUp: true },
-                { code: 'GBP', name: 'جنيه إسترليني', flag: '🇬🇧', buy: 18925, sell: 19196, change: '+1.26%', changeUp: true },
-                { code: 'QAR', name: 'ريال قطري', flag: '🇶🇦', buy: 3884, sell: 3940, change: '+1.28%', changeUp: true },
+                { code: 'GBP', name: 'جنيه إسترليني', flag: '🇬', buy: 18925, sell: 19196, change: '+1.26%', changeUp: true },
+                { code: 'QAR', name: 'ريال قطري', flag: '🇶', buy: 3884, sell: 3940, change: '+1.28%', changeUp: true },
                 { code: 'BHD', name: 'دينار بحريني', flag: '🇧🇭', buy: 37460, sell: 37998, change: '+0.75%', changeUp: true },
-                { code: 'SEK', name: 'كرونة سويدية', flag: '🇸🇪', buy: 1501, sell: 1522, change: '+0.94%', changeUp: true },
+                { code: 'SEK', name: 'كرونة سويدية', flag: '🇸', buy: 1501, sell: 1522, change: '+0.94%', changeUp: true },
                 { code: 'CAD', name: 'دولار كندي', flag: '🇨🇦', buy: 10139, sell: 10284, change: '+0.96%', changeUp: true },
-                { code: 'OMR', name: 'ريال عماني', flag: '🇴🇲', buy: 36741, sell: 37268, change: '+0.85%', changeUp: true },
+                { code: 'OMR', name: 'ريال عماني', flag: '🇴', buy: 36741, sell: 37268, change: '+0.85%', changeUp: true },
                 { code: 'NOK', name: 'كرونة نرويجية', flag: '🇳🇴', buy: 1495, sell: 1516, change: '+0.95%', changeUp: true },
                 { code: 'DKK', name: 'كرونة دنماركية', flag: '🇩🇰', buy: 2187, sell: 2218, change: '+1.11%', changeUp: true },
                 { code: 'DZD', name: 'دينار جزائري', flag: '🇩🇿', buy: 106, sell: 107, change: '+0.95%', changeUp: true },
@@ -815,8 +841,8 @@
                 { code: 'CHF', name: 'فرنك سويسري', flag: '🇨🇭', buy: 17748, sell: 18002, change: '+0.97%', changeUp: true },
                 { code: 'AUD', name: 'دولار أسترالي', flag: '🇦🇺', buy: 9969, sell: 10112, change: '+0.86%', changeUp: true },
                 { code: 'ZAR', name: 'راند جنوب أفريقي', flag: '🇿🇦', buy: 859, sell: 871, change: '+1.18%', changeUp: true },
-                { code: 'IQD', name: 'دينار عراقي', flag: '🇮🇶', buy: 11, sell: 11, change: '+0.00%', changeUp: true },
-                { code: 'SGD', name: 'دولار سنغافوري', flag: '🇸🇬', buy: 10990, sell: 11147, change: '+1.06%', changeUp: true }
+                { code: 'IQD', name: 'دينار عراقي', flag: '🇮', buy: 11, sell: 11, change: '+0.00%', changeUp: true },
+                { code: 'SGD', name: 'دولار سنغافوري', flag: '🇸', buy: 10990, sell: 11147, change: '+1.06%', changeUp: true }
             ],
             gold: [
                 { karat: '24K', gramUsd: 139.00, buy: 1990700, sell: 2015200 },
@@ -838,26 +864,48 @@
         let currentData = null;
         let isUpdating = false;
 
-        // ====== عند فتح التطبيق: تحميل البيانات المحفوظة ======
-        function loadSavedData() {
+        // ====== تحميل البيانات مع التحقق من الحداثة ======
+        async function loadSavedData() {
             const saved = localStorage.getItem('sp_today_data');
             const savedTime = localStorage.getItem('sp_today_time');
-
-            if (saved) {
+            
+            let useLocalData = true;
+            
+            // محاولة جلب البيانات الحديثة من الملف مع cache-busting
+            try {
+                const response = await fetch('sp_today_data.json?t=' + Date.now());
+                if (response.ok) {
+                    const serverData = await response.json();
+                    const serverTime = new Date(serverData.lastUpdate || 0);
+                    const localTime = savedTime ? new Date(savedTime) : new Date(0);
+                    
+                    // إذا كانت بيانات السيرفر أحدث بـ 5 دقائق على الأقل
+                    if (serverTime.getTime() - localTime.getTime() > 300000) {
+                        console.log('📥 بيانات أحدث متوفرة:', serverData.lastUpdate);
+                        currentData = serverData;
+                        useLocalData = false;
+                        saveData();
+                    }
+                }
+            } catch (e) {
+                console.log('⚠️ فشل جلب البيانات من السيرفر:', e.message);
+            }
+            
+            if (useLocalData && saved) {
                 try {
                     currentData = JSON.parse(saved);
                     if (savedTime) {
                         currentData.lastUpdate = savedTime;
                     }
+                    console.log('📂 استخدام البيانات المحلية المحفوظة');
                 } catch (e) {
                     currentData = JSON.parse(JSON.stringify(defaultData));
                 }
-            } else {
-                // اول مرة - استخدام البيانات الافتراضية وحفظها
+            } else if (!saved) {
                 currentData = JSON.parse(JSON.stringify(defaultData));
                 saveData();
             }
-
+            
             renderAll();
             updateUI();
         }
@@ -869,6 +917,15 @@
                 if (currentData.lastUpdate) {
                     localStorage.setItem('sp_today_time', currentData.lastUpdate);
                 }
+            }
+        }
+
+        // ====== مسح البيانات المحفوظة ======
+        function clearCache() {
+            if (confirm('⚠️ هل تريد مسح البيانات المحفوظة وتحميل البيانات الحديثة من السيرفر؟')) {
+                localStorage.removeItem('sp_today_data');
+                localStorage.removeItem('sp_today_time');
+                location.reload();
             }
         }
 
@@ -928,16 +985,6 @@
                     }
                 }
                 
-                // محاولة أخرى: استخراج من الجداول
-                const currencies = [];
-                const rows = doc.querySelectorAll('table tr, .currency-row, .rate-row');
-                rows.forEach(row => {
-                    const cells = row.querySelectorAll('td');
-                    if (cells.length >= 3) {
-                        // استخراج البيانات حسب بنية الموقع
-                    }
-                });
-                
                 return null;
             } catch (e) {
                 console.error('خطأ في تحليل HTML:', e);
@@ -948,7 +995,6 @@
         // ====== جلب البيانات من API بديل ======
         async function fetchFromAlternativeAPI() {
             try {
-                // استخدام API للحصول على سعر الدولار
                 const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD', {
                     signal: AbortSignal.timeout(8000)
                 });
@@ -957,9 +1003,7 @@
                 
                 const data = await response.json();
                 
-                // تحديث سعر الدولار فقط بناءً على البيانات الحالية
                 if (data.rates && currentData) {
-                    // يمكن استخدام البيانات لتحديث بعض الأسعار
                     return {
                         source: 'exchangerate-api.com',
                         timestamp: new Date().toISOString(),
@@ -996,7 +1040,6 @@
             try {
                 const spData = await fetchFromSpToday();
                 if (spData) {
-                    // تحديث البيانات
                     if (spData.currencies && spData.currencies.length > 0) {
                         currentData.currencies = spData.currencies;
                     }
@@ -1232,30 +1275,6 @@
             if (event && event.target) {
                 event.target.classList.add('active');
             }
-        }
-
-        // ====== إعادة تعيين البيانات ======
-        function resetToDefaults() {
-            if(confirm('هل تريد إعادة تعيين البيانات إلى الافتراضية (9/6/2026)؟')) {
-                localStorage.removeItem('sp_today_data');
-                localStorage.removeItem('sp_today_time');
-                currentData = JSON.parse(JSON.stringify(defaultData));
-                saveData();
-                renderAll();
-                updateUI();
-            }
-        }
-
-        // ====== تصدير البيانات ======
-        function exportData() {
-            const dataStr = JSON.stringify(currentData, null, 2);
-            const blob = new Blob([dataStr], {type: 'application/json'});
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `currency-data-${new Date().toISOString().split('T')[0]}.json`;
-            a.click();
-            URL.revokeObjectURL(url);
         }
 
         // ====== التهيئة عند فتح الصفحة ======
