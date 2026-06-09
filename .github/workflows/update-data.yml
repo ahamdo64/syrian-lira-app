@@ -2,22 +2,22 @@ name: Update Currency Data
 
 on:
   schedule:
-    - cron: '0 */6 * * *'  # كل 6 ساعات
-  workflow_dispatch:  # يمكن تشغيله يدوياً
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
 
 jobs:
   update-data:
     runs-on: ubuntu-latest
     permissions:
-      contents: write  # صلاحيات الكتابة
+      contents: write  # مهم للـ push
     
     steps:
       - uses: actions/checkout@v4  # أحدث إصدار
       
       - name: Set up Python
-        uses: actions/setup-python@v5  # أحدث إصدار
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.11'  # أحدث إصدار
+          python-version: '3.11'
       
       - name: Install dependencies
         run: |
@@ -25,7 +25,7 @@ jobs:
       
       - name: Run update script
         run: python update_sp_today.py
-        continue-on-error: true  # لا يفشل الـ workflow
+        continue-on-error: true  # لا يفشل إذا فشل السكريبت
       
       - name: Commit and push if changed
         run: |
