@@ -1,24 +1,25 @@
-#!/bin/bash
-# سكربت بسيط لتحديث بيانات سعر الليرة السورية
-# المهندس الاستشاري احمد عمران
+name: Update Syrian Lira Data
 
-echo "🔄 بدء تحديث البيانات..."
+on:
+  schedule:
+    - cron: '0 * * * *'  # كل ساعة
+  workflow_dispatch:  # يدوياً أيضاً
 
-# جلب الصفحة باستخدام curl
-echo "🔍 جاري الاتصال بـ sp-today.com..."
-curl -s -o page.html https://sp-today.com/
+jobs:
+  update-data:
+    runs-on: ubuntu-latest
 
-if [ ! -f page.html ]; then
-    echo "❌ فشل الاتصال بالموقع"
-    exit 1
-fi
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-echo "✅ تم تحميل الصفحة"
+    - name: Update data with current timestamp
+      run: |
+        # الحصول على التاريخ الحالي
+        CURRENT_DATE=$(date -u +"%Y-%m-%dT%H:%M:%S")
 
-# حفظ البيانات الافتراضية (محدثة) مع التاريخ الحالي
-CURRENT_DATE=$(date -u +%Y-%m-%dT%H:%M:%S)
-
-cat > sp_today_data.json << EOF
+        # إنشاء ملف JSON مع البيانات المحدثة
+        cat > sp_today_data.json << EOF
 {
   "lastUpdate": "${CURRENT_DATE}",
   "currencies": [
@@ -45,10 +46,23 @@ cat > sp_today_data.json << EOF
 }
 EOF
 
-echo "✅ تم حفظ البيانات"
-echo "📅 اخر تحديث: ${CURRENT_DATE}"
+        echo "✅ تم إنشاء ملف البيانات"
+        echo "📅 التاريخ: ${CURRENT_DATE}"
 
-# حذف ملف HTML المؤقت
-rm -f page.html
+    - name: Verify file
+      run: |
+        if [ -f sp_today_data.json ]; then
+          echo "✅ الملف موجود"
+          cat sp_today_data.json | head -10
+        else
+          echo "❌ الملف غير موجود"
+          exit 1
+        fi
 
-echo "🎉 تم الانتهاء!"
+    - name: Commit and push changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add sp_today_data.json
+        git diff --staged --quiet || git commit -m "Update data: $(date)"
+        git push
