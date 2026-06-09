@@ -631,16 +631,6 @@
             margin-bottom: 15px;
         }
 
-        .data-source-badge {
-            display: inline-block;
-            padding: 5px 15px;
-            background: rgba(0,204,255,0.2);
-            border-radius: 15px;
-            font-size: 0.85em;
-            color: #00ccff;
-            margin-top: 10px;
-        }
-
         @media (max-width: 600px) {
             .header h1 {
                 font-size: 1.8em;
@@ -679,7 +669,6 @@
             <p class="subtitle">اسعار العملات والذهب في سورية</p>
         </div>
 
-        <!-- شريط التحديث والوقت -->
         <div class="update-bar">
             <div class="update-info">
                 <span class="icon">📅</span>
@@ -709,7 +698,6 @@
             <button class="tab-btn" onclick="showTab('profile', event)">👤 المهندس احمد عمران</button>
         </div>
 
-        <!-- العملات -->
         <div id="currencies" class="tab-content active">
             <div class="cards-grid" id="currenciesGrid"></div>
             <div class="no-data-message" id="noDataCurrencies" style="display:none;">
@@ -718,7 +706,6 @@
             </div>
         </div>
 
-        <!-- الذهب -->
         <div id="gold" class="tab-content">
             <div class="gold-section" id="goldSection">
                 <h2 class="section-title">🥇 اسعار الذهب</h2>
@@ -740,7 +727,6 @@
             </div>
         </div>
 
-        <!-- محول العملات -->
         <div id="converter" class="tab-content">
             <div class="converter-section">
                 <h2 class="converter-title">🔄 محول العملات</h2>
@@ -768,7 +754,6 @@
             </div>
         </div>
 
-        <!-- الاخبار -->
         <div id="news" class="tab-content">
             <div class="news-section" id="newsSection"></div>
             <div class="no-data-message" id="noDataNews" style="display:none;">
@@ -777,10 +762,9 @@
             </div>
         </div>
 
-        <!-- الملف الشخصي -->
         <div id="profile" class="tab-content">
             <div class="profile-card">
-                <div class="profile-avatar">👨‍</div>
+                <div class="profile-avatar">👨‍💼</div>
                 <h2 class="profile-name">المهندس الاستشاري احمد عمران</h2>
                 <p class="profile-title">مهندس استشاري - خبير في مجال التقنية والتطوير</p>
                 <div class="profile-info">
@@ -811,393 +795,382 @@
     </div>
 
     <script>
-        <script>
-    // البيانات الافتراضية المحدثة بتاريخ 9/6/2026
-    const defaultData = {
-        currencies: [
-            { code: 'USD', name: 'دولار أمريكي', flag: '🇺🇸', buy: 14270, sell: 14330, change: '+0.85%', changeUp: true },
-            { code: 'EUR', name: 'يورو', flag: '🇪🇺', buy: 16380, sell: 16580, change: '+1.11%', changeUp: true },
-            { code: 'TRY', name: 'ليرة تركية', flag: '🇹🇷', buy: 307, sell: 311, change: '+0.66%', changeUp: true },
-            { code: 'SAR', name: 'ريال سعودي', flag: '🇸🇦', buy: 3763, sell: 3817, change: '+0.83%', changeUp: true },
-            { code: 'AED', name: 'درهم إماراتي', flag: '🇦🇪', buy: 3847, sell: 3902, change: '+0.87%', changeUp: true },
-            { code: 'EGP', name: 'جنيه مصري', flag: '🇪🇬', buy: 273, sell: 277, change: '+1.49%', changeUp: true },
-            { code: 'LYD', name: 'دينار ليبي', flag: '🇱🇾', buy: 2221, sell: 2253, change: '+0.73%', changeUp: true },
-            { code: 'JOD', name: 'دينار أردني', flag: '🇯🇴', buy: 19926, sell: 20212, change: '+0.85%', changeUp: true },
-            { code: 'KWD', name: 'دينار كويتي', flag: '🇰🇼', buy: 45711, sell: 46366, change: '+0.94%', changeUp: true },
-            { code: 'GBP', name: 'جنيه إسترليني', flag: '🇬🇧', buy: 18925, sell: 19196, change: '+1.26%', changeUp: true },
-            { code: 'QAR', name: 'ريال قطري', flag: '🇶🇦', buy: 3884, sell: 3940, change: '+1.28%', changeUp: true },
-            { code: 'BHD', name: 'دينار بحريني', flag: '🇧🇭', buy: 37460, sell: 37998, change: '+0.75%', changeUp: true },
-            { code: 'SEK', name: 'كرونة سويدية', flag: '🇸🇪', buy: 1501, sell: 1522, change: '+0.94%', changeUp: true },
-            { code: 'CAD', name: 'دولار كندي', flag: '🇨🇦', buy: 10139, sell: 10284, change: '+0.96%', changeUp: true },
-            { code: 'OMR', name: 'ريال عماني', flag: '🇴🇲', buy: 36741, sell: 37268, change: '+0.85%', changeUp: true },
-            { code: 'NOK', name: 'كرونة نرويجية', flag: '🇳🇴', buy: 1495, sell: 1516, change: '+0.95%', changeUp: true },
-            { code: 'DKK', name: 'كرونة دنماركية', flag: '🇩🇰', buy: 2187, sell: 2218, change: '+1.11%', changeUp: true },
-            { code: 'DZD', name: 'دينار جزائري', flag: '🇩🇿', buy: 106, sell: 107, change: '+0.95%', changeUp: true },
-            { code: 'MAD', name: 'درهم مغربي', flag: '🇲🇦', buy: 1525, sell: 1547, change: '+0.59%', changeUp: true },
-            { code: 'TND', name: 'دينار تونسي', flag: '🇹🇳', buy: 4128, sell: 4187, change: '-13.40%', changeUp: false },
-            { code: 'RUB', name: 'روبل روسي', flag: '🇷🇺', buy: 197, sell: 200, change: '+2.60%', changeUp: true },
-            { code: 'MYR', name: 'رينغيت ماليزي', flag: '🇲🇾', buy: 3479, sell: 3529, change: '+1.16%', changeUp: true },
-            { code: 'BRL', name: 'ريال برازيلي', flag: '🇧🇷', buy: 2720, sell: 2759, change: '+0.74%', changeUp: true },
-            { code: 'NZD', name: 'دولار نيوزيلندي', flag: '🇳🇿', buy: 8250, sell: 8368, change: '+1.20%', changeUp: true },
-            { code: 'CHF', name: 'فرنك سويسري', flag: '🇨🇭', buy: 17748, sell: 18002, change: '+0.97%', changeUp: true },
-            { code: 'AUD', name: 'دولار أسترالي', flag: '🇦🇺', buy: 9969, sell: 10112, change: '+0.86%', changeUp: true },
-            { code: 'ZAR', name: 'راند جنوب أفريقي', flag: '🇿🇦', buy: 859, sell: 871, change: '+1.18%', changeUp: true },
-            { code: 'IQD', name: 'دينار عراقي', flag: '🇮🇶', buy: 11, sell: 11, change: '+0.00%', changeUp: true },
-            { code: 'SGD', name: 'دولار سنغافوري', flag: '🇸🇬', buy: 10990, sell: 11147, change: '+1.06%', changeUp: true }
-        ],
-        gold: [
-            { karat: '24K', gramUsd: 139.00, buy: 1990700, sell: 2015200 },
-            { karat: '21K', gramUsd: 122.00, buy: 1741900, sell: 1763300 },
-            { karat: '18K', gramUsd: 105.00, buy: 1493000, sell: 1511400 },
-            { karat: '14K', gramUsd: 81.00, buy: 1161200, sell: 1175400 }
-        ],
-        news: [
-            { date: '09/06/2026', title: 'إعفاء رسوم العبور يجلب 206 آلاف عائد إلى سوريا خلال أسبوعين', desc: 'عبر نحو 206 ألف سوري إلى البلاد بين 18 و31 أيار 2026 بعد إعفاء المركبات السورية من رسوم الدخول بمناسبة عيد الأضحى.' },
-            { date: '09/06/2026', title: 'وزير الطاقة السوري يبحث في واشنطن استثمارات أمريكية في النفط والغاز', desc: 'بحث وزير الطاقة السوري في واشنطن سبل جذب الاستثمارات الأمريكية في قطاع النفط والغاز السوري.' },
-            { date: '08/06/2026', title: 'خطة بـ37 مليون دولار لإعادة تأهيل طرق وجسور دير الزور', desc: 'أعلنت الحكومة عن خطة بقيمة 37 مليون دولار لإعادة تأهيل الطرق والجسور في محافظة دير الزور.' },
-            { date: '08/06/2026', title: 'تعليق مطار دمشق وتحويل رحلات سورية مع إغلاق الممرات الجوية الجنوبية', desc: 'تم تعليق العمل في مطار دمشق الدولي وتحويل الرحلات الجوية بسبب إغلاق الممرات الجوية الجنوبية.' },
-            { date: '08/06/2026', title: 'شركة سعودية تطلق استثماراً سكنياً بملياري دولار قرب دمشق', desc: 'أطلقت شركة عقارية سعودية مشروعين سكنيين في ريف دمشق باستثمار يتجاوز ملياري دولار.' }
-        ],
-        lastUpdate: '2026-06-09T12:00:00.000Z',
-        source: 'sp-today.com'
-    };
+        const defaultData = {
+            currencies: [
+                { code: 'USD', name: 'دولار أمريكي', flag: '🇺🇸', buy: 14270, sell: 14330, change: '+0.85%', changeUp: true },
+                { code: 'EUR', name: 'يورو', flag: '🇪🇺', buy: 16380, sell: 16580, change: '+1.11%', changeUp: true },
+                { code: 'TRY', name: 'ليرة تركية', flag: '🇹', buy: 307, sell: 311, change: '+0.66%', changeUp: true },
+                { code: 'SAR', name: 'ريال سعودي', flag: '🇸🇦', buy: 3763, sell: 3817, change: '+0.83%', changeUp: true },
+                { code: 'AED', name: 'درهم إماراتي', flag: '🇦🇪', buy: 3847, sell: 3902, change: '+0.87%', changeUp: true },
+                { code: 'EGP', name: 'جنيه مصري', flag: '🇪🇬', buy: 273, sell: 277, change: '+1.49%', changeUp: true },
+                { code: 'LYD', name: 'دينار ليبي', flag: '🇱', buy: 2221, sell: 2253, change: '+0.73%', changeUp: true },
+                { code: 'JOD', name: 'دينار أردني', flag: '🇯🇴', buy: 19926, sell: 20212, change: '+0.85%', changeUp: true },
+                { code: 'KWD', name: 'دينار كويتي', flag: '🇰🇼', buy: 45711, sell: 46366, change: '+0.94%', changeUp: true },
+                { code: 'GBP', name: 'جنيه إسترليني', flag: '🇬', buy: 18925, sell: 19196, change: '+1.26%', changeUp: true },
+                { code: 'QAR', name: 'ريال قطري', flag: '🇶', buy: 3884, sell: 3940, change: '+1.28%', changeUp: true },
+                { code: 'BHD', name: 'دينار بحريني', flag: '🇧🇭', buy: 37460, sell: 37998, change: '+0.75%', changeUp: true },
+                { code: 'SEK', name: 'كرونة سويدية', flag: '🇸🇪', buy: 1501, sell: 1522, change: '+0.94%', changeUp: true },
+                { code: 'CAD', name: 'دولار كندي', flag: '🇨', buy: 10139, sell: 10284, change: '+0.96%', changeUp: true },
+                { code: 'OMR', name: 'ريال عماني', flag: '🇴🇲', buy: 36741, sell: 37268, change: '+0.85%', changeUp: true },
+                { code: 'NOK', name: 'كرونة نرويجية', flag: '🇳🇴', buy: 1495, sell: 1516, change: '+0.95%', changeUp: true },
+                { code: 'DKK', name: 'كرونة دنماركية', flag: '🇩🇰', buy: 2187, sell: 2218, change: '+1.11%', changeUp: true },
+                { code: 'DZD', name: 'دينار جزائري', flag: '🇩🇿', buy: 106, sell: 107, change: '+0.95%', changeUp: true },
+                { code: 'MAD', name: 'درهم مغربي', flag: '🇲🇦', buy: 1525, sell: 1547, change: '+0.59%', changeUp: true },
+                { code: 'TND', name: 'دينار تونسي', flag: '🇹🇳', buy: 4128, sell: 4187, change: '-13.40%', changeUp: false },
+                { code: 'RUB', name: 'روبل روسي', flag: '🇷🇺', buy: 197, sell: 200, change: '+2.60%', changeUp: true },
+                { code: 'MYR', name: 'رينغيت ماليزي', flag: '🇲', buy: 3479, sell: 3529, change: '+1.16%', changeUp: true },
+                { code: 'BRL', name: 'ريال برازيلي', flag: '🇧🇷', buy: 2720, sell: 2759, change: '+0.74%', changeUp: true },
+                { code: 'NZD', name: 'دولار نيوزيلندي', flag: '🇳🇿', buy: 8250, sell: 8368, change: '+1.20%', changeUp: true },
+                { code: 'CHF', name: 'فرنك سويسري', flag: '🇨🇭', buy: 17748, sell: 18002, change: '+0.97%', changeUp: true },
+                { code: 'AUD', name: 'دولار أسترالي', flag: '🇦🇺', buy: 9969, sell: 10112, change: '+0.86%', changeUp: true },
+                { code: 'ZAR', name: 'راند جنوب أفريقي', flag: '🇿🇦', buy: 859, sell: 871, change: '+1.18%', changeUp: true },
+                { code: 'IQD', name: 'دينار عراقي', flag: '🇮🇶', buy: 11, sell: 11, change: '+0.00%', changeUp: true },
+                { code: 'SGD', name: 'دولار سنغافوري', flag: '🇸', buy: 10990, sell: 11147, change: '+1.06%', changeUp: true }
+            ],
+            gold: [
+                { karat: '24K', gramUsd: 139.00, buy: 1990700, sell: 2015200 },
+                { karat: '21K', gramUsd: 122.00, buy: 1741900, sell: 1763300 },
+                { karat: '18K', gramUsd: 105.00, buy: 1493000, sell: 1511400 },
+                { karat: '14K', gramUsd: 81.00, buy: 1161200, sell: 1175400 }
+            ],
+            news: [
+                { date: '09/06/2026', title: 'إعفاء رسوم العبور يجلب 206 آلاف عائد إلى سوريا خلال أسبوعين', desc: 'عبر نحو 206 ألف سوري إلى البلاد بين 18 و31 أيار 2026 بعد إعفاء المركبات السورية من رسوم الدخول بمناسبة عيد الأضحى.' },
+                { date: '09/06/2026', title: 'وزير الطاقة السوري يبحث في واشنطن استثمارات أمريكية في النفط والغاز', desc: 'بحث وزير الطاقة السوري في واشنطن سبل جذب الاستثمارات الأمريكية في قطاع النفط والغاز السوري.' },
+                { date: '08/06/2026', title: 'خطة بـ37 مليون دولار لإعادة تأهيل طرق وجسور دير الزور', desc: 'أعلنت الحكومة عن خطة بقيمة 37 مليون دولار لإعادة تأهيل الطرق والجسور في محافظة دير الزور.' },
+                { date: '08/06/2026', title: 'تعليق مطار دمشق وتحويل رحلات سورية مع إغلاق الممرات الجوية الجنوبية', desc: 'تم تعليق العمل في مطار دمشق الدولي وتحويل الرحلات الجوية بسبب إغلاق الممرات الجوية الجنوبية.' },
+                { date: '08/06/2026', title: 'شركة سعودية تطلق استثماراً سكنياً بملياري دولار قرب دمشق', desc: 'أطلقت شركة عقارية سعودية مشروعين سكنيين في ريف دمشق باستثمار يتجاوز ملياري دولار.' }
+            ],
+            lastUpdate: '2026-06-09T12:00:00.000Z',
+            source: 'sp-today.com'
+        };
 
-    let currentData = null;
-    let isUpdating = false;
+        let currentData = null;
+        let isUpdating = false;
 
-    // ====== الحصول على مسار الملف الصحيح ======
-    function getDataFilePath() {
-        // استخدام مسار نسبي من نفس الـ domain
-        return 'sp_today_data.json';
-    }
-
-    // ====== تحميل البيانات - نسخة محسّنة ======
-async function loadSavedData() {
-    console.log('🚀 بدء تحميل البيانات...');
-    
-    const saved = localStorage.getItem('sp_today_data');
-    const savedTime = localStorage.getItem('sp_today_time');
-    
-    let dataLoaded = false;
-    
-    // المحاولة 1: جلب من ملف JSON
-    try {
-        console.log('📡 محاولة جلب من sp_today_data.json...');
-        const cacheBuster = Date.now();
-        const response = await fetch('sp_today_data.json?v=' + cacheBuster);
-        
-        if (response.ok) {
-            const serverData = await response.json();
-            console.log('✅ تم جلب البيانات من الملف:', serverData);
+        async function loadSavedData() {
+            console.log('🚀 بدء تحميل البيانات...');
             
-            // التحقق من صحة البيانات
-            if (serverData.currencies && serverData.currencies.length > 0) {
-                currentData = serverData;
-                saveData();
-                dataLoaded = true;
-                console.log('📥 تم تحميل البيانات من الملف بنجاح');
-            }
-        }
-    } catch (e) {
-        console.warn('⚠️ فشل جلب من الملف:', e.message);
-    }
-    
-    // المحاولة 2: استخدام localStorage
-    if (!dataLoaded && saved) {
-        try {
-            console.log('📂 محاولة من localStorage...');
-            currentData = JSON.parse(saved);
-            if (savedTime) {
-                currentData.lastUpdate = savedTime;
-            }
-            dataLoaded = true;
-            console.log('✅ تم التحميل من localStorage');
-        } catch (e) {
-            console.error('❌ خطأ في localStorage:', e);
-        }
-    }
-    
-    // المحاولة 3: استخدام البيانات الافتراضية
-    if (!dataLoaded) {
-        console.log('📋 استخدام البيانات الافتراضية...');
-        currentData = JSON.parse(JSON.stringify(defaultData));
-        currentData.lastUpdate = new Date().toISOString();
-        saveData();
-        console.log('✅ تم استخدام البيانات الافتراضية');
-    }
-    
-    // عرض البيانات
-    console.log('📊 البيانات الحالية:', currentData);
-    renderAll();
-    updateUI(true);
-}
-    // ====== حفظ البيانات ======
-    function saveData() {
-        if (currentData) {
-            localStorage.setItem('sp_today_data', JSON.stringify(currentData));
-            if (currentData.lastUpdate) {
-                localStorage.setItem('sp_today_time', currentData.lastUpdate);
-            }
-        }
-    }
-
-    // ====== مسح البيانات المحفوظة ======
-    function clearCache() {
-        if (confirm('⚠️ هل تريد مسح البيانات المحفوظة وتحميل البيانات الحديثة؟')) {
-            localStorage.removeItem('sp_today_data');
-            localStorage.removeItem('sp_today_time');
-            location.reload();
-        }
-    }
-
-    // ====== جلب البيانات عند الضغط على زر التحديث ======
-    async function fetchData() {
-        if (isUpdating) return;
-        isUpdating = true;
-
-        const btn = document.getElementById('updateBtn');
-        const btnIcon = document.getElementById('btnIcon');
-        const btnText = document.getElementById('btnText');
-
-        btn.classList.add('loading');
-        btnText.textContent = 'جاري التحديث...';
-        btn.disabled = true;
-        document.getElementById('errorMessage').classList.remove('show');
-
-        let success = false;
-        let source = '';
-
-        try {
-            // جلب من نفس الـ domain مع cache-busting قوي
-            const cacheBuster = Date.now() + '_' + Math.random();
-            const response = await fetch(getDataFilePath() + '?v=' + cacheBuster, {
-                cache: 'no-store'
-            });
+            const saved = localStorage.getItem('sp_today_data');
+            const savedTime = localStorage.getItem('sp_today_time');
             
-            if (response.ok) {
-                const serverData = await response.json();
+            let dataLoaded = false;
+            
+            try {
+                console.log('📡 محاولة جلب من sp_today_data.json...');
+                const cacheBuster = Date.now();
+                const response = await fetch('sp_today_data.json?v=' + cacheBuster);
                 
-                // التحقق من وجود بيانات صالحة
-                if (serverData.currencies && serverData.currencies.length > 0) {
-                    currentData = serverData;
-                    currentData.lastUpdate = new Date().toISOString();
-                    currentData.source = 'sp-today.com (عبر GitHub)';
-                    success = true;
-                    source = 'GitHub';
-                    
-                    saveData();
-                    renderAll();
+                if (response.ok) {
+                    const contentType = response.headers.get('content-type');
+                    if (contentType && contentType.includes('application/json')) {
+                        const serverData = await response.json();
+                        console.log('✅ تم جلب البيانات من الملف:', serverData);
+                        
+                        if (serverData.currencies && serverData.currencies.length > 0) {
+                            currentData = serverData;
+                            saveData();
+                            dataLoaded = true;
+                            console.log('📥 تم تحميل البيانات من الملف بنجاح');
+                        }
+                    } else {
+                        console.warn('⚠️ المحتوى ليس JSON');
+                        const text = await response.text();
+                        if (!text.trim().startsWith('<')) {
+                            const serverData = JSON.parse(text);
+                            if (serverData.currencies && serverData.currencies.length > 0) {
+                                currentData = serverData;
+                                saveData();
+                                dataLoaded = true;
+                            }
+                        }
+                    }
+                } else {
+                    console.warn('⚠️ الملف غير موجود (HTTP ' + response.status + ')');
+                }
+            } catch (e) {
+                console.error('❌ فشل جلب الملف:', e.message);
+            }
+            
+            if (!dataLoaded && saved) {
+                try {
+                    console.log('📂 محاولة من localStorage...');
+                    currentData = JSON.parse(saved);
+                    if (savedTime) {
+                        currentData.lastUpdate = savedTime;
+                    }
+                    dataLoaded = true;
+                    console.log('✅ تم التحميل من localStorage');
+                } catch (e) {
+                    console.error('❌ خطأ في localStorage:', e);
                 }
             }
-        } catch (e) {
-            console.error('فشل الجلب:', e);
+            
+            if (!dataLoaded) {
+                console.log('📋 استخدام البيانات الافتراضية...');
+                currentData = JSON.parse(JSON.stringify(defaultData));
+                currentData.lastUpdate = new Date().toISOString();
+                saveData();
+                console.log('✅ تم استخدام البيانات الافتراضية');
+            }
+            
+            console.log('📊 البيانات الحالية:', currentData);
+            console.log('عدد العملات:', currentData.currencies ? currentData.currencies.length : 0);
+            renderAll();
+            updateUI(true);
         }
 
-        // Fallback: تحديث الوقت فقط
-        if (!success) {
-            currentData.lastUpdate = new Date().toISOString();
-            currentData.source = 'محلي';
-            success = true;
-            source = 'محلي';
-            saveData();
+        function saveData() {
+            if (currentData) {
+                localStorage.setItem('sp_today_data', JSON.stringify(currentData));
+                if (currentData.lastUpdate) {
+                    localStorage.setItem('sp_today_time', currentData.lastUpdate);
+                }
+            }
         }
 
-        renderAll();
-        updateUI(success);
-
-        // تحديث واجهة الزر
-        btn.classList.remove('loading');
-        
-        if (source === 'GitHub') {
-            btn.classList.add('success');
-            btnIcon.textContent = '✅';
-            btnText.textContent = 'تم التحديث';
-        } else {
-            btn.classList.add('error');
-            btnIcon.textContent = '⚠️';
-            btnText.textContent = 'بيانات محلية';
-            document.getElementById('errorMessage').classList.add('show');
+        function clearCache() {
+            if (confirm('⚠️ هل تريد مسح البيانات المحفوظة وتحميل البيانات الحديثة؟')) {
+                localStorage.removeItem('sp_today_data');
+                localStorage.removeItem('sp_today_time');
+                location.reload();
+            }
         }
 
-        setTimeout(() => {
-            btn.classList.remove('success', 'error');
-            btnIcon.textContent = '🔄';
-            btnText.textContent = 'تحديث الآن';
-            btn.disabled = false;
-        }, 3000);
+        async function fetchData() {
+            if (isUpdating) return;
+            isUpdating = true;
 
-        isUpdating = false;
-    }
+            const btn = document.getElementById('updateBtn');
+            const btnIcon = document.getElementById('btnIcon');
+            const btnText = document.getElementById('btnText');
 
-    // ====== تحديث واجهة المستخدم ======
-    function updateUI(online = false) {
-        const timeEl = document.getElementById('lastUpdateTime');
-        const badge = document.getElementById('statusBadge');
+            btn.classList.add('loading');
+            btnText.textContent = 'جاري التحديث...';
+            btn.disabled = true;
+            document.getElementById('errorMessage').classList.remove('show');
 
-        if (currentData && currentData.lastUpdate) {
-            const date = new Date(currentData.lastUpdate);
-            const formatted = date.toLocaleString('ar-SY', {
-                year: 'numeric',
-                month: '2-digit',
-                day: '2-digit',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit'
-            });
-            timeEl.textContent = formatted;
+            let success = false;
+            let source = '';
 
-            if (online) {
-                timeEl.classList.remove('offline');
-                badge.className = 'status-badge online';
-                badge.textContent = '🟢 متصل';
+            try {
+                const cacheBuster = Date.now();
+                const response = await fetch('sp_today_data.json?v=' + cacheBuster);
+                
+                if (response.ok) {
+                    const serverData = await response.json();
+                    
+                    if (serverData.currencies && serverData.currencies.length > 0) {
+                        currentData = serverData;
+                        currentData.lastUpdate = new Date().toISOString();
+                        currentData.source = 'sp-today.com (عبر GitHub)';
+                        success = true;
+                        source = 'GitHub';
+                        
+                        saveData();
+                        renderAll();
+                    }
+                }
+            } catch (e) {
+                console.error('فشل الجلب:', e);
+            }
+
+            if (!success) {
+                currentData.lastUpdate = new Date().toISOString();
+                currentData.source = 'محلي';
+                success = true;
+                source = 'محلي';
+                saveData();
+            }
+
+            renderAll();
+            updateUI(success);
+
+            btn.classList.remove('loading');
+            
+            if (source === 'GitHub') {
+                btn.classList.add('success');
+                btnIcon.textContent = '✅';
+                btnText.textContent = 'تم التحديث';
             } else {
-                timeEl.classList.add('offline');
+                btn.classList.add('error');
+                btnIcon.textContent = '⚠️';
+                btnText.textContent = 'بيانات محلية';
+                document.getElementById('errorMessage').classList.add('show');
+            }
+
+            setTimeout(() => {
+                btn.classList.remove('success', 'error');
+                btnIcon.textContent = '🔄';
+                btnText.textContent = 'تحديث الآن';
+                btn.disabled = false;
+            }, 3000);
+
+            isUpdating = false;
+        }
+
+        function updateUI(online = false) {
+            const timeEl = document.getElementById('lastUpdateTime');
+            const badge = document.getElementById('statusBadge');
+
+            if (currentData && currentData.lastUpdate) {
+                const date = new Date(currentData.lastUpdate);
+                const formatted = date.toLocaleString('ar-SY', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                timeEl.textContent = formatted;
+
+                if (online) {
+                    timeEl.classList.remove('offline');
+                    badge.className = 'status-badge online';
+                    badge.textContent = '🟢 متصل';
+                } else {
+                    timeEl.classList.add('offline');
+                    badge.className = 'status-badge offline';
+                    badge.textContent = '⚠️ غير متصل';
+                }
+            } else {
+                timeEl.textContent = '--';
                 badge.className = 'status-badge offline';
                 badge.textContent = '⚠️ غير متصل';
             }
-        } else {
-            timeEl.textContent = '--';
-            badge.className = 'status-badge offline';
-            badge.textContent = '⚠️ غير متصل';
-        }
-    }
-
-    // ====== عرض البيانات ======
-    function renderAll() {
-        if (!currentData) return;
-        renderCurrencies();
-        renderGold();
-        renderNews();
-        updateConverterOptions();
-    }
-
-    function renderCurrencies() {
-        const grid = document.getElementById('currenciesGrid');
-        const noData = document.getElementById('noDataCurrencies');
-
-        if (!currentData.currencies || currentData.currencies.length === 0) {
-            grid.innerHTML = '';
-            noData.style.display = 'block';
-            return;
         }
 
-        noData.style.display = 'none';
-        grid.innerHTML = currentData.currencies.map(currency => `
-            <div class="currency-card">
-                <div class="currency-header">
-                    <span class="currency-flag">${currency.flag}</span>
-                    <div>
-                        <div class="currency-name">${currency.name}</div>
-                        <div class="currency-code">${currency.code}</div>
+        function renderAll() {
+            if (!currentData) return;
+            renderCurrencies();
+            renderGold();
+            renderNews();
+            updateConverterOptions();
+        }
+
+        function renderCurrencies() {
+            const grid = document.getElementById('currenciesGrid');
+            const noData = document.getElementById('noDataCurrencies');
+
+            if (!currentData.currencies || currentData.currencies.length === 0) {
+                grid.innerHTML = '';
+                noData.style.display = 'block';
+                return;
+            }
+
+            noData.style.display = 'none';
+            grid.innerHTML = currentData.currencies.map(currency => `
+                <div class="currency-card">
+                    <div class="currency-header">
+                        <span class="currency-flag">${currency.flag}</span>
+                        <div>
+                            <div class="currency-name">${currency.name}</div>
+                            <div class="currency-code">${currency.code}</div>
+                        </div>
                     </div>
+                    <div class="price-row">
+                        <span class="price-label">💚 شراء</span>
+                        <span class="price-value price-buy">${currency.buy.toLocaleString()} ل.س</span>
+                    </div>
+                    <div class="price-row">
+                        <span class="price-label">❤️ مبيع</span>
+                        <span class="price-value price-sell">${currency.sell.toLocaleString()} ل.س</span>
+                    </div>
+                    <span class="change-badge ${currency.changeUp ? 'change-up' : 'change-down'}">
+                        ${currency.changeUp ? '📈' : '📉'} ${currency.change}
+                    </span>
                 </div>
-                <div class="price-row">
-                    <span class="price-label">💚 شراء</span>
-                    <span class="price-value price-buy">${currency.buy.toLocaleString()} ل.س</span>
-                </div>
-                <div class="price-row">
-                    <span class="price-label">❤️ مبيع</span>
-                    <span class="price-value price-sell">${currency.sell.toLocaleString()} ل.س</span>
-                </div>
-                <span class="change-badge ${currency.changeUp ? 'change-up' : 'change-down'}">
-                    ${currency.changeUp ? '📈' : '📉'} ${currency.change}
-                </span>
-            </div>
-        `).join('');
-    }
-
-    function renderGold() {
-        const tbody = document.getElementById('goldTableBody');
-        const noData = document.getElementById('noDataGold');
-
-        if (!currentData.gold || currentData.gold.length === 0) {
-            tbody.innerHTML = '';
-            noData.style.display = 'block';
-            document.getElementById('goldSection').style.display = 'none';
-            return;
+            `).join('');
         }
 
-        noData.style.display = 'none';
-        document.getElementById('goldSection').style.display = 'block';
+        function renderGold() {
+            const tbody = document.getElementById('goldTableBody');
+            const noData = document.getElementById('noDataGold');
 
-        tbody.innerHTML = currentData.gold.map(gold => `
-            <tr>
-                <td class="gold-karat">${gold.karat}</td>
-                <td>$${gold.gramUsd.toFixed(2)}</td>
-                <td>${gold.buy.toLocaleString()}</td>
-                <td>${gold.sell.toLocaleString()}</td>
-            </tr>
-        `).join('');
-    }
+            if (!currentData.gold || currentData.gold.length === 0) {
+                tbody.innerHTML = '';
+                noData.style.display = 'block';
+                document.getElementById('goldSection').style.display = 'none';
+                return;
+            }
 
-    function renderNews() {
-        const section = document.getElementById('newsSection');
-        const noData = document.getElementById('noDataNews');
+            noData.style.display = 'none';
+            document.getElementById('goldSection').style.display = 'block';
 
-        if (!currentData.news || currentData.news.length === 0) {
-            section.innerHTML = '';
-            noData.style.display = 'block';
-            return;
+            tbody.innerHTML = currentData.gold.map(gold => `
+                <tr>
+                    <td class="gold-karat">${gold.karat}</td>
+                    <td>$${gold.gramUsd.toFixed(2)}</td>
+                    <td>${gold.buy.toLocaleString()}</td>
+                    <td>${gold.sell.toLocaleString()}</td>
+                </tr>
+            `).join('');
         }
 
-        noData.style.display = 'none';
-        section.innerHTML = currentData.news.map(news => `
-            <div class="news-card">
-                <div class="news-date">📅 ${news.date}</div>
-                <h3 class="news-title">${news.title}</h3>
-                <p class="news-desc">${news.desc}</p>
-            </div>
-        `).join('');
-    }
+        function renderNews() {
+            const section = document.getElementById('newsSection');
+            const noData = document.getElementById('noDataNews');
 
-    function updateConverterOptions() {
-        const select = document.getElementById('fromCurrency');
-        if (!currentData.currencies) return;
+            if (!currentData.news || currentData.news.length === 0) {
+                section.innerHTML = '';
+                noData.style.display = 'block';
+                return;
+            }
 
-        select.innerHTML = currentData.currencies.map(c => 
-            `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`
-        ).join('');
-    }
+            noData.style.display = 'none';
+            section.innerHTML = currentData.news.map(news => `
+                <div class="news-card">
+                    <div class="news-date">📅 ${news.date}</div>
+                    <h3 class="news-title">${news.title}</h3>
+                    <p class="news-desc">${news.desc}</p>
+                </div>
+            `).join('');
+        }
 
-    // ====== محول العملات ======
-    function convertCurrency() {
-        const amount = parseFloat(document.getElementById('amount').value) || 0;
-        const fromCode = document.getElementById('fromCurrency').value;
+        function updateConverterOptions() {
+            const select = document.getElementById('fromCurrency');
+            if (!currentData.currencies) return;
 
-        const currency = currentData.currencies.find(c => c.code === fromCode);
-        if (!currency) return;
+            select.innerHTML = currentData.currencies.map(c => 
+                `<option value="${c.code}">${c.flag} ${c.name} (${c.code})</option>`
+            ).join('');
+        }
 
-        const result = amount * currency.sell;
+        function convertCurrency() {
+            const amount = parseFloat(document.getElementById('amount').value) || 0;
+            const fromCode = document.getElementById('fromCurrency').value;
 
-        document.getElementById('resultValue').textContent = result.toLocaleString() + ' ل.س';
-        document.getElementById('resultDetails').textContent = 
-            `${amount.toLocaleString()} ${currency.name} = ${result.toLocaleString()} ليرة سورية (سعر المبيع)`;
-        document.getElementById('resultBox').classList.add('show');
-    }
+            const currency = currentData.currencies.find(c => c.code === fromCode);
+            if (!currency) return;
 
-    // ====== تبديل التبويبات ======
-    function showTab(tabId, event) {
-        document.querySelectorAll('.tab-content').forEach(content => {
-            content.classList.remove('active');
+            const result = amount * currency.sell;
+
+            document.getElementById('resultValue').textContent = result.toLocaleString() + ' ل.س';
+            document.getElementById('resultDetails').textContent = 
+                `${amount.toLocaleString()} ${currency.name} = ${result.toLocaleString()} ليرة سورية (سعر المبيع)`;
+            document.getElementById('resultBox').classList.add('show');
+        }
+
+        function showTab(tabId, event) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(tabId).classList.add('active');
+            if (event && event.target) {
+                event.target.classList.add('active');
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('loadingOverlay').classList.add('show');
+            setTimeout(() => {
+                loadSavedData();
+                document.getElementById('loadingOverlay').classList.remove('show');
+            }, 800);
         });
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.classList.remove('active');
-        });
-        document.getElementById(tabId).classList.add('active');
-        if (event && event.target) {
-            event.target.classList.add('active');
-        }
-    }
-
-    // ====== التهيئة عند فتح الصفحة ======
-    document.addEventListener('DOMContentLoaded', function() {
-        document.getElementById('loadingOverlay').classList.add('show');
-        setTimeout(() => {
-            loadSavedData();
-            document.getElementById('loadingOverlay').classList.remove('show');
-        }, 800);
-    });
-</script>
     </script>
 </body>
 </html>
