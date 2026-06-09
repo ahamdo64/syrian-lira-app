@@ -8,13 +8,16 @@ on:
 jobs:
   update-data:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write  # صلاحيات الكتابة
+    
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4  # أحدث إصدار
       
       - name: Set up Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5  # أحدث إصدار
         with:
-          python-version: '3.9'
+          python-version: '3.11'  # أحدث إصدار
       
       - name: Install dependencies
         run: |
@@ -22,11 +25,11 @@ jobs:
       
       - name: Run update script
         run: python update_sp_today.py
+        continue-on-error: true  # لا يفشل الـ workflow
       
       - name: Commit and push if changed
         run: |
-          git config --global user.name 'GitHub Actions'
+          git config --global user.name 'GitHub Actions Bot'
           git config --global user.email 'actions@github.com'
           git add sp_today_data.json
-          git commit -m "Update currency data $(date +%Y-%m-%d)" || echo "No changes to commit"
-          git push
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🔄 تحديث الأسعار - $(date '+%Y-%m-%d %H:%M')" && git push)
