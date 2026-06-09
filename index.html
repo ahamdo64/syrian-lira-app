@@ -871,64 +871,66 @@
         return 'sp_today_data.json';
     }
 
-    // ====== تحميل البيانات - الحل الجذري ======
-    async function loadSavedData() {
-        console.log('🚀 بدء تحميل البيانات...');
+    // ====== تحميل البيانات - نسخة محسّنة ======
+async function loadSavedData() {
+    console.log('🚀 بدء تحميل البيانات...');
+    
+    const saved = localStorage.getItem('sp_today_data');
+    const savedTime = localStorage.getItem('sp_today_time');
+    
+    let dataLoaded = false;
+    
+    // المحاولة 1: جلب من ملف JSON
+    try {
+        console.log('📡 محاولة جلب من sp_today_data.json...');
+        const cacheBuster = Date.now();
+        const response = await fetch('sp_today_data.json?v=' + cacheBuster);
         
-        const saved = localStorage.getItem('sp_today_data');
-        const savedTime = localStorage.getItem('sp_today_time');
-        
-        // الخطوة 1: جلب البيانات من نفس الـ domain (لا CORS!)
-        try {
-            // cache-busting قوي لمنع التخزين المؤقت
-            const cacheBuster = Date.now() + '_' + Math.random();
-            const response = await fetch(getDataFilePath() + '?v=' + cacheBuster, {
-                cache: 'no-store',
-                headers: {
-                    'Cache-Control': 'no-cache'
-                }
-            });
+        if (response.ok) {
+            const serverData = await response.json();
+            console.log('✅ تم جلب البيانات من الملف:', serverData);
             
-            if (response.ok) {
-                const serverData = await response.json();
-                console.log('✅ تم جلب البيانات من السيرفر:', serverData.lastUpdate);
-                
-                // مقارنة الأوقات
-                const serverTime = new Date(serverData.lastUpdate || 0).getTime();
-                const localTime = savedTime ? new Date(savedTime).getTime() : 0;
-                
-                if (serverTime > localTime) {
-                    console.log('📥 بيانات السيرفر أحدث - جاري التحديث');
-                    currentData = serverData;
-                    saveData();
-                } else {
-                    console.log('📂 البيانات المحلية محدثة');
-                    currentData = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultData));
-                }
-            } else {
-                throw new Error('HTTP ' + response.status);
-            }
-        } catch (e) {
-            console.warn('⚠️ فشل جلب من السيرفر:', e.message);
-            
-            // Fallback: استخدام البيانات المحلية
-            if (saved) {
-                try {
-                    currentData = JSON.parse(saved);
-                    console.log('📂 استخدام البيانات المحلية');
-                } catch (err) {
-                    currentData = JSON.parse(JSON.stringify(defaultData));
-                }
-            } else {
-                currentData = JSON.parse(JSON.stringify(defaultData));
+            // التحقق من صحة البيانات
+            if (serverData.currencies && serverData.currencies.length > 0) {
+                currentData = serverData;
                 saveData();
+                dataLoaded = true;
+                console.log('📥 تم تحميل البيانات من الملف بنجاح');
             }
         }
-        
-        renderAll();
-        updateUI(true);
+    } catch (e) {
+        console.warn('⚠️ فشل جلب من الملف:', e.message);
     }
-
+    
+    // المحاولة 2: استخدام localStorage
+    if (!dataLoaded && saved) {
+        try {
+            console.log('📂 محاولة من localStorage...');
+            currentData = JSON.parse(saved);
+            if (savedTime) {
+                currentData.lastUpdate = savedTime;
+            }
+            dataLoaded = true;
+            console.log('✅ تم التحميل من localStorage');
+        } catch (e) {
+            console.error('❌ خطأ في localStorage:', e);
+        }
+    }
+    
+    // المحاولة 3: استخدام البيانات الافتراضية
+    if (!dataLoaded) {
+        console.log('📋 استخدام البيانات الافتراضية...');
+        currentData = JSON.parse(JSON.stringify(defaultData));
+        currentData.lastUpdate = new Date().toISOString();
+        saveData();
+        console.log('✅ تم استخدام البيانات الافتراضية');
+    }
+    
+    // عرض البيانات
+    console.log('📊 البيانات الحالية:', currentData);
+    renderAll();
+    updateUI(true);
+}
     // ====== حفظ البيانات ======
     function saveData() {
         if (currentData) {
