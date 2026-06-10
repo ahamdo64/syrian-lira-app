@@ -1,87 +1,93 @@
 {
-  "lastUpdate": "2026-06-10T14:02:56.362445",
+  "lastUpdate": "2026-06-10T20:27:27.098670",
   "currencies": [
     {
       "code": "USD",
       "name": "دولار امريكي",
       "flag": "🇺🇸",
-      "buy": 14550,
-      "sell": 14620,
-      "change": "+1.46%",
-      "changeUp": true
+      "buy": 14340,
+      "sell": 14390,
+      "change": "-1.57%",
+      "changeUp": false
     },
     {
       "code": "EUR",
       "name": "يورو",
-      "flag": "🇺",
-      "buy": 16680,
-      "sell": 16890,
-      "change": "+1.46%",
-      "changeUp": true
+      "flag": "🇪🇺",
+      "buy": 16440,
+      "sell": 16640,
+      "change": "-1.48%",
+      "changeUp": false
     },
     {
       "code": "TRY",
       "name": "ليرة تركية",
-      "flag": "🇷",
-      "buy": 313,
-      "sell": 317,
-      "change": "+1.29%",
-      "changeUp": true
+      "flag": "🇹🇷",
+      "buy": 307,
+      "sell": 311,
+      "change": "-1.89%",
+      "changeUp": false
     },
     {
       "code": "SAR",
       "name": "ريال سعودي",
-      "flag": "🇸",
-      "buy": 3837,
-      "sell": 3894,
-      "change": "+1.48%",
-      "changeUp": true
+      "flag": "🇸🇦",
+      "buy": 3766,
+      "sell": 3820,
+      "change": "-1.90%",
+      "changeUp": false
     },
     {
       "code": "AED",
       "name": "درهم اماراتي",
       "flag": "🇦🇪",
-      "buy": 3922,
-      "sell": 3981,
-      "change": "+1.45%",
-      "changeUp": true
+      "buy": 3849,
+      "sell": 3905,
+      "change": "-1.91%",
+      "changeUp": false
     },
     {
       "code": "EGP",
       "name": "جنيه مصري",
-      "flag": "🇪",
-      "buy": 278,
-      "sell": 282,
-      "change": "+1.09%",
-      "changeUp": true
+      "flag": "🇪🇬",
+      "buy": 273,
+      "sell": 277,
+      "change": "-1.77%",
+      "changeUp": false
     }
   ],
   "gold": [
     {
       "karat": "24K",
-      "gramUsd": 131.001,
-      "buy": 1907900,
-      "sell": 1932800
+      "gramUsd": 139.0,
+      "buy": 1989200,
+      "sell": 2013700
     },
     {
       "karat": "21K",
-      "gramUsd": 115.001,
-      "buy": 1669400,
-      "sell": 1691200
+      "gramUsd": 122.0,
+      "buy": 1740600,
+      "sell": 1762000
     },
     {
       "karat": "18K",
-      "gramUsd": 98.001,
-      "buy": 1430900,
-      "sell": 1449600
+      "gramUsd": 104.0,
+      "buy": 1491900,
+      "sell": 1510300
     },
     {
       "karat": "14K",
-      "gramUsd": 77.001,
-      "buy": 1112900,
-      "sell": 1127400
+      "gramUsd": 81.0,
+      "buy": 1160300,
+      "sell": 1174600
     }
   ],
-  "news": [],
-  "source": "sp-today.com"
+  "news": [
+    {
+      "date": "10/06/2026",
+      "title": "تحديث الأسعار",
+      "desc": "تم تحديث أسعار العملات والذهب بنجاح"
+    }
+  ],
+  "source": "default"
 }
