@@ -2,9 +2,9 @@ name: Update Currency Data
 
 on:
   schedule:
-    - cron: '0 * * * *'  # كل ساعة (بدلاً من كل 6 ساعات)
-  workflow_dispatch:  # تشغيل يدوي من GitHub
-  
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
 jobs:
   update-data:
     runs-on: ubuntu-latest
@@ -13,8 +13,6 @@ jobs:
     
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
       
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -25,25 +23,12 @@ jobs:
         run: pip install requests beautifulsoup4 lxml
       
       - name: Run update script
-        run: python main.py
+        run: python update_sp_today.py  # ✅ تم التصحيح
         continue-on-error: true
       
-      - name: Check file
-        id: check
-        run: |
-          if [ -f sp_today_data.json ]; then
-            echo "exists=true" >> $GITHUB_OUTPUT
-          else
-            echo "exists=false" >> $GITHUB_OUTPUT
-          fi
-      
       - name: Commit and push
-        if: steps.check.outputs.exists == 'true'
         run: |
-          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.name 'GitHub Actions'
           git config --global user.email 'actions@github.com'
           git add sp_today_data.json
-          git diff --quiet && git diff --staged --quiet || {
-            git commit -m "🔄 تحديث الأسعار - $(date '+%Y-%m-%d %H:%M')"
-            git push
-          }
+          git diff --quiet && git diff --staged --quiet || (git commit -m "🔄 تحديث الأسعار" && git push)
